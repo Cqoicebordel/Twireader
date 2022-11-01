@@ -5,26 +5,26 @@
 Here is a kludged together Twitter (and Mastodon) reader. It displays them chronologically, in a paged reader.
 
 Its workflow is somewhat simple :  
-#A cron-ed script fetch the tweets from your timeline  
-#They are stored in a SQLite database  
-#You use a local hosted webpage to view them
+1. A cron-ed script fetch the tweets from your timeline  
+2. They are stored in a SQLite database  
+3. You use a local hosted webpage to view them
 
 ### Features
 
-Paged Twitter and Mastodon feed, displayed chronologically  
-Self hosted database and webpage  
-Direct link to Tweets, retweeted tweets, cited tweets and thread tweets  
-Switchable view of a parent thread  
-You can show only tweets of a particular handle  
-Simple search included  
-Direct links to tweet, see notifications or DMs  
-Display of number of unread notifications and DMs  
-Show full size image  
-Use native HTML5 video player to display Twitter videos  
-Integrate Youtube players  
-Use J/K letters or panning to switch pages  
-Protect or delete tweets you don't want to keep  
-Gif are shown as images and videos  
+- Paged Twitter and Mastodon feed, displayed chronologically  
+- Self hosted database and webpage  
+- Direct link to Tweets, retweeted tweets, cited tweets and thread tweets  
+- Switchable view of a parent thread  
+- You can show only tweets of a particular handle  
+- Simple search included  
+- Direct links to tweet, see notifications or DMs  
+- Display of number of unread notifications and DMs  
+- Show full size image  
+- Use native HTML5 video player to display Twitter videos  
+- Integrate Youtube players  
+- Use J/K letters or panning to switch pages  
+- Protect or delete tweets you don't want to keep  
+- Gif are shown as images and videos  
 
 
 ## Installation
@@ -96,6 +96,7 @@ It means that the number of toots per page is random. That might annoy some user
 
 #### Misc
 
-There are no alt text on the images  
-Polls aren't rendered, at all  
-Mixed medias tweets don't show all medias yet  
+- There are no alt text on the images  
+- Polls aren't rendered, at all  
+- Mixed medias tweets don't show all medias yet  
+- …
