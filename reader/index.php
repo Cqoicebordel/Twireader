@@ -168,7 +168,7 @@
 	}
 	
 	
-	// Responsible for showing a single toot. Similar as the one above, but simpler, as lots of things aren't implemented (in particular reply, boost, star)
+	// Responsible for showing a single toot. Similar as the one above, but simpler, as lots of things aren't implemented
 	function print_toot($row, $dbhandle, $is_discussion, $index){
 		$output = "";
 		if($index != -1){
@@ -186,8 +186,7 @@
 			$output_discussion = "";
 			while ($rowD = $resultDiscussion->fetchArray()) {
 				$has_discussion = true;
-				$output_discussion .= print_tweet($rowD, $dbhandle, true, -1);
-				$output_discussion .= "</div>\n";
+				$output_discussion .= print_toot($rowD, $dbhandle, true, -1);
 			}
 			if($has_discussion){
 				$output .= "<div class=\"conversation\" id=\"conversation".$index."\" >";
@@ -222,6 +221,10 @@
 		//$output .= "<br />\n";
 		$output .= "<div style=\"clear: both;\"></div>\n";
 		$output .= "<p class=\"date\"><a href=\"".$row['link_of_tweet']."\">".$row['date']."</a>\n";
+		
+		global $mastodon_server;
+		$output .= " - <a href=\"".$mastodon_server."@".$row['author_screen_name']."/".$row['id']."\" onClick=\"window.open('".$mastodon_server."@".$row['author_screen_name']."/".$row['id']."','Interactions', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=820'); return false;\">Int&eacute;ractions</a>\n";
+
 		if($has_discussion){
 			$output .= " - <span class=\"conversationSwitcher\" onClick=\"displayConversation('conversation".$index."', 'checkbox".$index."');\"><input type=\"checkbox\" id=\"checkbox".$index."\" aria-label=\"conversation\"><label>Voir la conversation</label></span>\n";
 		}
@@ -298,7 +301,8 @@
 	// Settings
 	$tweetsperpage = 20;
 	$owner = "Name";
-	$base = "base.sqlite"
+	$base = "base.sqlite";
+	$mastodon_server = "https://mastodon.social/";
 
 	
 	$ids = array();
@@ -310,7 +314,7 @@
 	$details = false;
 	
 	$html_header = '<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="fr" lang="en" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
 <head>
 <meta http-equiv=Content-Type content="text/html; charset=utf-8" />
 <meta name="referrer" content="no-referrer" />
