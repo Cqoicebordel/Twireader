@@ -175,6 +175,12 @@ body{
 abbr.emoji {
     font-size: 120%;
 }
+
+.toot_emoji{
+	max-height:19px;
+	max-width:19px;
+	vertical-align:text-bottom;
+}
  
  span.rt{
 	 font-weight: bold;
@@ -210,11 +216,11 @@ abbr.emoji {
 	margin-left: 55px;
   }
   
-  .ctrl-pressed div.text:hover{
+  .shift-pressed div.text:hover{
 	white-space: pre-wrap;
   }
    
-  .ctrl-pressed div.text:hover br{
+  .shift-pressed div.text:hover br{
 	display: none;
   }
   

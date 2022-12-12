@@ -3,7 +3,7 @@
 	/**
 		Create the bottom page pager, showing two pages before and after the current one, as well as the two first and last.
 	*/
-	function create_pager($nbPages, $page, $prefixe){
+	function create_pager(int $nbPages, int $page, string $prefixe): string {
 		$pager = "";
 		if($nbPages > 1){
 			$pager .= "<div class=\"pager\">";
@@ -36,7 +36,7 @@
 	/**
 		Responsible for showing a single tweet.
 	*/
-	function print_tweet($row, $dbhandle, $is_discussion, $index){
+	function print_tweet(array $row, SQLite3 $dbhandle, bool $is_discussion, int $index): string {
 		$output = "";
 		if($index != -1){
 			$output .= "<div class=\"tweet\" id=\"".$index."\" >\n";
@@ -101,9 +101,9 @@
 		// Footer of the tweet (date+link, reply, retweet, star)
 		$output .= "<div style=\"clear: both;\"></div>\n";
 		$output .= "<p class=\"date\"><a href=\"".$row['link_of_tweet']."\">".$row['date']."</a>\n";
-		$output .= " - <a href=\"https://twitter.com/intent/tweet?lang=fr&amp;in_reply_to=".$row['id']."\" onClick=\"window.open('https://twitter.com/intent/tweet?lang=fr&amp;in_reply_to=".$row['id']."','Repondre', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=420'); return false;\">R&eacute;pondre</a>\n - ";
-		$output .= "<a href=\"https://twitter.com/intent/retweet?lang=fr&amp;tweet_id=".$row['id']."\" onClick=\"window.open('https://twitter.com/intent/retweet?lang=fr&amp;tweet_id=".$row['id']."','Retweet', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=420'); return false;\">Retweet</a>\n - ";
-		$output .= "<a href=\"https://twitter.com/intent/favorite?lang=fr&amp;tweet_id=".$row['id']."\" onClick=\"window.open('https://twitter.com/intent/favorite?lang=fr&amp;tweet_id=".$row['id']."','Favoris', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=420'); return false;\">Favoris</a>\n";
+		$output .= " - <a href=\"https://twitter.com/intent/tweet?lang=fr&amp;in_reply_to=".$row['id']."\" onClick=\"window.open('https://twitter.com/intent/tweet?lang=fr&amp;in_reply_to=".$row['id']."','Repondre', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=520'); return false;\">R&eacute;pondre</a>\n - ";
+		$output .= "<a href=\"https://twitter.com/intent/retweet?lang=fr&amp;tweet_id=".$row['id']."\" onClick=\"window.open('https://twitter.com/intent/retweet?lang=fr&amp;tweet_id=".$row['id']."','Retweet', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=520'); return false;\">Retweet</a>\n - ";
+		$output .= "<a href=\"https://twitter.com/intent/favorite?lang=fr&amp;tweet_id=".$row['id']."\" onClick=\"window.open('https://twitter.com/intent/favorite?lang=fr&amp;tweet_id=".$row['id']."','Favoris', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, copyhistory=no, width=550,height=520'); return false;\">Favoris</a>\n";
 		
 		// if it has a parent thread, add the switch to show it
 		if($has_discussion){
@@ -148,10 +148,10 @@
 				$a_value = 0; 
 				$b_value = 0;
 				if (preg_match($pattern, $a[0], $match)){
-					$a_value = $match[1];
+					$a_value = intval($match[1]);
 				}
 				if (preg_match($pattern, $b[0], $match)){
-					$b_value = $match[1];
+					$b_value = intval($match[1]);
 				}
 				return -$a_value <=> -$b_value;
 			});
@@ -169,7 +169,7 @@
 	
 	
 	// Responsible for showing a single toot. Similar as the one above, but simpler, as lots of things aren't implemented
-	function print_toot($row, $dbhandle, $is_discussion, $index){
+	function print_toot(array $row, SQLite3 $dbhandle, bool $is_discussion, int $index): string {
 		$output = "";
 		if($index != -1){
 			$output .= "<div class=\"tweet toot\" id=\"".$index."\" >\n";
@@ -264,10 +264,10 @@
 				$a_value = 0; 
 				$b_value = 0;
 				if (preg_match($pattern, $a[0], $match)){
-					$a_value = $match[1];
+					$a_value = intval($match[1]);
 				}
 				if (preg_match($pattern, $b[0], $match)){
-					$b_value = $match[1];
+					$b_value = intval($match[1]);
 				}
 				return -$a_value <=> -$b_value;
 			});
@@ -284,7 +284,7 @@
 		return $output;
 	}
 	
-	function get_page_number($nbPages){
+	function get_page_number(int $nbPages): int {
 		if(isset($_GET['page']) && !empty($_GET['page']) && intval($_GET['page'])){
 			$page = intval($_GET['page'])-1;
 			if($page<0){
@@ -299,7 +299,7 @@
 	}
 
 	// Settings
-	$tweetsperpage = 20;
+	$tweetsperpage = 10;
 	$owner = "Name";
 	$base = "base.sqlite";
 	$mastodon_server = "https://mastodon.social/";
@@ -327,12 +327,12 @@
 <script>
 	window.scrollTo(0,1);
 	
-	var ctrl = false;
+	var shift = false;
 	
 	// If you press control over a tweet or a toot, it will display without the spaces collapsing to a single one. Useful for ascii art, and not much more.
 	function ctrlHandler(event) {
-		ctrl = event.ctrlKey;
-		document.body.className = ctrl ? "ctrl-pressed" : "";
+		shift = event.shiftKey;
+		document.body.className = shift ? "shift-pressed" : "";
 	};
 
 	window.addEventListener("keydown", ctrlHandler, false);
@@ -400,7 +400,7 @@
 <body>';
 
 	$dbhandle = new SQLite3($base);
-	if (!$dbhandle) die ($error);
+	if (!$dbhandle) die ("Error while trying to open the database");
 	
 	$dbhandle->busyTimeout(60000);
 	
@@ -410,11 +410,14 @@
 	$result = $dbhandle->query($requete);
 	if (!$result) die("Cannot execute query.");
 	$nbtweets = $result->fetchArray()[0];
-	$header .=  "<a href=\"./\">".$nbtweets." tweets au total</a> - ";
 	
+	$requete = "SELECT COUNT(*) from mastodon_feed";
+	$result = $dbhandle->query($requete);
+	if (!$result) die("Cannot execute query.");
+	$nbtoots = $result->fetchArray()[0];
 
-	$header .=  "</a> - ";*/
-	$header .=  "<a href=\"./?mentions\">mentions</a> - ";
+	$header .=  "<a href=\"./\">".$nbtweets."🐦 + ".$nbtoots."🐘</a> - ";
+	$header .=  "<a href=\"./?mentions\">me</a> - ";
 	
 	// Add a list of all tweets authors handles in the base
 	$requete = "SELECT author_screen_name, COUNT(DISTINCT id) AS count FROM feed GROUP BY author_screen_name ORDER BY author_screen_name";
@@ -432,52 +435,61 @@
 	$liste .= "</select></span>\n";
 	$header .=  $liste;
 	
+	$page = 0;
 	
 	// Different cases of display, based on the arguments in the URL
 	if(isset($_GET['handle']) && !empty($_GET['handle'])){
 		// You are searching within an handle
 		if(isset($_GET['search']) && !empty($_GET['search'])){
 			$stmt = $dbhandle->prepare("SELECT COUNT(*) FROM feed WHERE author_screen_name=:author_screen_name AND text LIKE :search");
-			$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
-			$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
+				$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			$nbtweets = $result->fetchArray()[0];
 			if($nbtweets == 0){
 				header('location: ./?handle='.$_GET['handle']);
 			}
 			
-			$nbPages = ceil($nbtweets/$tweetsperpage);
+			$nbPages = intval(ceil($nbtweets/$tweetsperpage));
 
 			$page = get_page_number($nbPages);
 			
 			$stmt = $dbhandle->prepare("SELECT * FROM feed WHERE author_screen_name=:author_screen_name AND text LIKE :search LIMIT ".$tweetsperpage*$page.",".$tweetsperpage);
-			$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
-			$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
+				$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			
 			$pager = create_pager($nbPages, $page, "&amp;handle=".$_GET['handle']."&amp;search=".$_GET['search']);
 			$details=true;
 		// All tweet from a person
 		}else{
 			$stmt = $dbhandle->prepare("SELECT COUNT(*) FROM feed WHERE author_screen_name=:author_screen_name");
-			$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			$nbtweets = $result->fetchArray()[0];
 			if($nbtweets == 0){
 				header('location: ./');
 			}
 			
-			$nbPages = ceil($nbtweets/$tweetsperpage);
+			$nbPages = intval(ceil($nbtweets/$tweetsperpage));
 
 			$page = get_page_number($nbPages);
 			
 			$stmt = $dbhandle->prepare("SELECT * FROM feed WHERE author_screen_name=:author_screen_name LIMIT ".$tweetsperpage*$page.",".$tweetsperpage);
-			$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':author_screen_name', $_GET['handle'], SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			
 			$pager = create_pager($nbPages, $page, "&amp;handle=".$_GET['handle']);
 			$details=true;
@@ -486,66 +498,89 @@
 	}else if(isset($_GET['mentions'])){
 		// A search in your mentions
 		if(isset($_GET['search']) && !empty($_GET['search'])){
-			/*if($mentions == 0){
-				header('location: ./');
-			}*/
 			$stmt = $dbhandle->prepare("SELECT COUNT(*) FROM feed WHERE text LIKE :name AND text LIKE :search");
-			$stmt->bindValue(':name', "%".$owner."%", SQLITE3_TEXT);
-			$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':name', "%".$owner."%", SQLITE3_TEXT);
+				$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			$nbtweets = $result->fetchArray()[0];
 			if($nbtweets == 0){
 				header('location: ./?mentions');
 			}
 			
-			$nbPages = ceil($nbtweets/$tweetsperpage);
+			$nbPages = intval(ceil($nbtweets/$tweetsperpage));
 
 			$page = get_page_number($nbPages);
 			
 			$stmt = $dbhandle->prepare("SELECT * FROM feed WHERE text LIKE :name AND text LIKE :search LIMIT ".$tweetsperpage*$page.",".$tweetsperpage);
-			$stmt->bindValue(':name', "%".$owner."%", SQLITE3_TEXT);
-			$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':name', "%".$owner."%", SQLITE3_TEXT);
+				$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			
 			$pager = create_pager($nbPages, $page, "&amp;mentions&amp;search=".$_GET['search']);
-			$details=true;
+			$details = true;
 		// All tweets where you are mentionned. Broken
 		}else{
+			$stmt = $dbhandle->prepare("SELECT COUNT(*) FROM feed WHERE text LIKE '%".$owner."%'");
+			if($stmt){
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
+			
+			$nbtweets = $result->fetchArray()[0];
+			if($nbtweets == 0){
+				header('location: ./?mentions');
+			}
+			
+			$nbPages = intval(ceil($nbtweets/$tweetsperpage));
+		
+
+			$page = get_page_number($nbPages);
 			
 			$stmt = $dbhandle->prepare("SELECT * FROM feed WHERE text LIKE '%".$owner."%' LIMIT ".$tweetsperpage*$page.",".$tweetsperpage);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			
 			$pager = create_pager($nbPages, $page, "&amp;mentions");
+			$details = true;
 		}
 	}else{
 		// Simple search (doesn't look in cited tweets nor threads)
 		if(isset($_GET['search']) && !empty($_GET['search'])){
 			$stmt = $dbhandle->prepare("SELECT COUNT(*) FROM feed WHERE text LIKE :search");
-			$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			$nbtweets = $result->fetchArray()[0];
 			if($nbtweets == 0){
 				header('location: ./');
 			}
 			
-			$nbPages = ceil($nbtweets/$tweetsperpage);
+			$nbPages = intval(ceil($nbtweets/$tweetsperpage));
 
 			$page = get_page_number($nbPages);
 			
 			$stmt = $dbhandle->prepare("SELECT * FROM feed WHERE text LIKE :search LIMIT ".$tweetsperpage*$page.",".$tweetsperpage);
-			$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
-			$result = $stmt->execute();
-			if (!$result) die("Cannot execute query.");
+			if($stmt){
+				$stmt->bindValue(':search', "%".$_GET['search']."%", SQLITE3_TEXT);
+				$result = $stmt->execute();
+				if (!$result) die("Cannot execute query.");
+			}
 			
 			$pager = create_pager($nbPages, $page, "&amp;search=".$_GET['search']);
 			$details=true;
 		// Default view
 		}else{
-			$nbPages = ceil($nbtweets/$tweetsperpage);
+			$nbPages = intval(ceil($nbtweets/$tweetsperpage));
 
 			$page = get_page_number($nbPages);
 			
@@ -638,10 +673,13 @@
 		$header .= "<input type=\"hidden\" name=\"mentions\">\n";
 	}
 	$header .= "</form>";
-	$header .= ' - <a href="https://twitter.com/intent/tweet?lang=fr" onClick="window.open(\'https://twitter.com/intent/tweet?lang=fr\',\'Tweet\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no,  copyhistory=no, width=600,height=400\'); return false;">Tweet</a>';
+	$header .= ' - <a href="https://twitter.com/intent/tweet?lang=fr" onClick="window.open(\'https://twitter.com/intent/tweet?lang=fr\',\'Tweet\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no,  copyhistory=no, width=600,height=400\'); return false;">🐦</a>';
+	$header .= '/<a href="'.$mastodon_server.'publish" onClick="window.open(\''.$mastodon_server.'publish\',\'Toot\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no,  copyhistory=no, width=600,height=400\'); return false;">🐘</a>';
 	
 	$json = (array) json_decode(file_get_contents('./badges.txt'));
-	$header .= ' - <a href="https://twitter.com/notifications">N:'.$json["ntab_unread_count"].'</a> - <a href="https://twitter.com/messages">DM:'.$json["dm_unread_count"].'</a>';
+	$tootnotif = file_get_contents('/home/cqoicebordel/twitter/mastodon.txt');
+	$header .= ' - <a href="https://twitter.com/notifications">N:'.$json["ntab_unread_count"].'</a>/<a href="https://twitter.com/messages">DM:'.$json["dm_unread_count"].'</a>';
+	$header .= ' - <a href="'.$mastodon_server.'notifications">🐘:'.$tootnotif.'</a>';
 	
 	$header .=  "</div><hr />\n";
 	
