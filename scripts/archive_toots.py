@@ -117,10 +117,15 @@ def getConversation(id, idParent):
         textElongated = 'RT <a href="'+t['reblog']['account']['url']+'">@'+t['reblog']['account']['acct']+'</a>: '+ t['reblog']['content']
         textElongated2 = regex2.sub(emoji, textElongated)
         pp = t['account']['avatar'] + "," + t['reblog']['account']['avatar']
+        for emoj in t.setdefault('reblog', []).setdefault("emojis", []):
+            textElongated2 = textElongated2.replace(":"+emoj["shortcode"]+":", '<img src="'+emoj["url"]+'" alt="'+emoj["shortcode"]+'" title="'+emoj["shortcode"]+'" class="toot_emoji">')
     else:
         textElongated = t['content']
         textElongated2 = regex2.sub(emoji, textElongated)
         pp = t['account']['avatar']
+        for emoj in t.setdefault("emojis", []):
+            textElongated2 = textElongated2.replace(":"+emoj["shortcode"]+":", '<img src="'+emoj["url"]+'" alt="'+emoj["shortcode"]+'" title="'+emoj["shortcode"]+'"  class="toot_emoji">')
+
 
     #print(textElongated)
     images = ""
@@ -234,12 +239,17 @@ for t in reversed(toots):
             print(type(t['reblog']['in_reply_to_id']))
             print(type(t['reblog']))
             print(type(tsrt.strftime(datefmt)))
+        for emoj in t.setdefault('reblog', []).setdefault("emojis", []):
+            textElongated2 = textElongated2.replace(":"+emoj["shortcode"]+":", '<img src="'+emoj["url"]+'" alt="'+emoj["shortcode"]+'" title="'+emoj["shortcode"]+'" class="toot_emoji">')
     else:
         textElongated = t['content']
         textElongated2 = regex2.sub(emoji, textElongated)
         pp = t['account']['avatar']
         if t['in_reply_to_id'] is not None:
             getConversation(t['in_reply_to_id'], t['id'])
+        for emoj in t.setdefault("emojis", []):
+            textElongated2 = textElongated2.replace(":"+emoj["shortcode"]+":", '<img src="'+emoj["url"]+'" alt="'+emoj["shortcode"]+'" title="'+emoj["shortcode"]+'" class="toot_emoji">')
+
 
     #print(textElongated)
     images = ""
